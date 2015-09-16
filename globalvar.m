@@ -1,0 +1,10 @@
+global CAMERA_ANGLES
+global FC
+global CC
+global ALPHA_C
+
+CAMERA_ANGLES=[58.71;0;63.64];
+
+FC = [ 1131.12272 ;  1127.87988 ]; 
+CC = [ 625.10527 ;  457.75935 ] ;
+ALPHA_C=0;

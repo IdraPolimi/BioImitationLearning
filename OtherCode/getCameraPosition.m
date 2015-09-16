@@ -4,8 +4,9 @@ function cameraPosition=getCameraPosition(angles)
 % INPUT: a vector like this: [roll,pitch,yaw], in radians;
 % OUTPUT: a vector like this: [x,y,z], in mm
 
-%%%body parameters, do not change!
-vec=[58.71;0;63.64];
+global CAMERA_ANGLES
+
+vec=CAMERA_ANGLES;
 
 roll=angles(1);
 pitch=angles(2);

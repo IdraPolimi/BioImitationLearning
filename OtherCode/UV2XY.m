@@ -12,14 +12,14 @@ function point=UV2XY(coords, Ifc, Icc, Ialpha, Erotation, Etrans, z)
 
 
 
-cameraMat=[fc(1,1), alpha, cc(1,1); 0, fc(2,1), cc(2,1); 0 0 1];
+cameraMat=[Ifc(1,1), Ialpha, Icc(1,1); 0, Ifc(2,1), Icc(2,1); 0 0 1];
 uvMat=[coords;1];
 
-temp=inv(rotationMat)*inv(cameraMat)*uvMat;
-temp2=rotationMat\traslationVec;%inv(rotationMat)*traslationVec is slower;
+temp=inv(Erotation)*inv(cameraMat)*uvMat;
+temp2=inv(Erotation)*Etrans;
 
 s=z+temp2(3,1);
 s=s/temp(3,1);
-point=rotationMat\(s\cameraMat*uvMat-traslationVec); %inv(rotationMat)*(s*inv(cameraMat)*uvMat-traslationVec) is slower;
+point=inv(Erotation)*(s*inv(cameraMat)*uvMat-Etrans);
 
 end
