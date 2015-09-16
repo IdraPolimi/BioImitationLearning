@@ -5,8 +5,10 @@ function cameraPosition=getCameraPosition(angles)
 % OUTPUT: a vector like this: [x,y,z], in mm
 
 global CAMERA_ANGLES
+global NeckOffsetZ;
 
 vec=CAMERA_ANGLES;
+
 
 roll=angles(1);
 pitch=angles(2);
@@ -24,5 +26,8 @@ R=[cy*cp, cy*sp*sr-sy*cr, cy*sp*cr+sy*sr;
    -sp, cp*sr,cp*cr];
 
 cameraPosition = R*vec;
+
+cameraPosition(3)=cameraPosition(3)+NeckOffsetZ;
+cameraPosition
 
 end
