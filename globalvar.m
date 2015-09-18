@@ -1,6 +1,7 @@
 global CAMERA_ANGLES
 global FC
 global CC
+global KC
 global ALPHA_C
 global shoulderOffsetY
 global elbowOffsetY
@@ -33,6 +34,8 @@ NeckOffsetZ = 126.5;
 
 CAMERA_ANGLES=[58.71;0;63.64];
 
+%%INTRISIC PARAM OF TOP CAMERA
 FC = [ 1131.12272 ;  1127.87988 ]; 
 CC = [ 625.10527 ;  457.75935 ] ;
+KC = [ -0.0313 ; 0.0521 ; -0.0037 ; -0.0034 ; 0];
 ALPHA_C=0;
