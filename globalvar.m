@@ -17,6 +17,8 @@ global TibiaLength
 global FootHeight
 global NeckOffsetZ
 
+
+%%Some measures of NAO in mm
 shoulderOffsetY = 98;
 elbowOffsetY = 15;
 upperArmLength = 105;
@@ -31,7 +33,7 @@ TibiaLength = 102.90;
 FootHeight = 45.11;
 NeckOffsetZ = 126.5;
 
-
+%%Position in mm of the camera wrt neck axis
 CAMERA_ANGLES=[58.71;0;63.64];
 
 %%INTRISIC PARAM OF TOP CAMERA

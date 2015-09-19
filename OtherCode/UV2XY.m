@@ -8,9 +8,7 @@ function point=UV2XY(coords, Ifc, Icc, Ialpha, Erotation, Etrans, z)
 %        3x3 rotation matrix (extrinsic)
 %        3x1 translation vector (extrinsic)        
 %        known height z as float 
-% OUTPUT: 3D vector [x,y,z]
-
-
+% OUTPUT: 3D vector [x;y;z] as column vector
 
 cameraMat=[Ifc(1,1), Ialpha, Icc(1,1); 0, Ifc(2,1), Icc(2,1); 0 0 1];
 uvMat=[coords;1];
