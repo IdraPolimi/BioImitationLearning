@@ -1,6 +1,6 @@
 nPoints = 4
 %im = grabAFrame();
-im = imread('Immagini/fromNao.jpg');
+im = imread('fromNao2.jpg');
 pixelPoints = selectPointsInImage(im,nPoints);
 coordPoints =[];
 for i = 1:nPoints
@@ -20,6 +20,32 @@ for i = 1:nPoints
     pointsCamera = [pointsCamera,fromWorldToCamera(ERot,ETran,coordPoints(:,i))];
 end
 figure;
-plot3(pointsCamera(1,:),pointsCamera(2,:),pointsCamera(3,:));
+
+plot3(pointsCamera(3,:),-pointsCamera(1,:),-pointsCamera(2,:),'b');
+pointsCamera
+hold on
+plot3(0,0,0,'rO')
+xlabel('X ');
+ylabel('Y ');
+zlabel('Z ');
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+cameraPosition =[78.4673;0;163.1031;1.0000];
+cameraPosition
+
+pointsTorso=repmat(cameraPosition,1,4)+pointsCamera;
+plot3(pointsTorso(3,:),-pointsTorso(1,:),-pointsTorso(2,:),'y');
+plot3(-cameraPosition(1,:),-cameraPosition(2,:),-cameraPosition(3,:),'kO');
+
+
+
+
+
+
+
+
+
 
 

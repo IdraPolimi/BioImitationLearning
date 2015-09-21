@@ -1,4 +1,4 @@
-function cameraPosition=getCameraPosition(angles)
+function cameraPosition=getCameraPosition(angles,points)
 % getCameraPosition: from pitch and yaw of neck, computes
 % camera pose wrt torso frame.
 % INPUT: a vector like this: [roll,pitch,yaw], in radians;
@@ -6,6 +6,7 @@ function cameraPosition=getCameraPosition(angles)
 
 global CAMERA_ANGLES
 global NeckOffsetZ;
+
 
 vec=CAMERA_ANGLES;
 
@@ -26,6 +27,10 @@ R=[cy*cp, cy*sp*sr-sy*cr, cy*sp*cr+sy*sr;
    -sp, cp*sr,cp*cr];
 
 cameraPosition = R*vec;
+
+points=R*[points(3);-points(1);-points(2)];
+
+cameraPosition=cameraPosition+points;
 
 cameraPosition(3)=cameraPosition(3)+NeckOffsetZ;
 cameraPosition
