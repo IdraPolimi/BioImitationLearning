@@ -1,4 +1,4 @@
-function cameraPosition=getCameraPosition(angles,points)
+function cameraPosition=getCameraPosition(angles,points)%rispetto al torso
 % getCameraPosition: from pitch and yaw of neck, computes
 % camera pose wrt torso frame.
 % INPUT: a vector like this: [roll,pitch,yaw], in radians;

@@ -23,6 +23,6 @@ imBlueIdx  = rgb(3:3:3*1280*960);
     end
 
 imshow(image)
-imwrite(image,'fromNao.jpg');
+imwrite(image,'fromNao2.jpg');
 end
 
