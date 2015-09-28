@@ -16,6 +16,7 @@ global ThighLength
 global TibiaLength
 global FootHeight
 global NeckOffsetZ
+global rot
 
 shoulderOffsetY = 98;
 elbowOffsetY = 15;
@@ -39,3 +40,7 @@ FC = [ 1131.12272 ;  1127.87988 ];
 CC = [ 625.10527 ;  457.75935 ] ;
 KC = [ -0.0313 ; 0.0521 ; -0.0037 ; -0.0034 ; 0];
 ALPHA_C=0;
+
+
+%%ROTATION MATRIX FROM CAMERA REFERENCE TO OUR CAMERA REFERENCE
+rot = [cos(-pi/2) 0 sin(-pi/2) 0;0 1 0 0;-sin(-pi/2) 0 cos(-pi/2) 0;0 0 0 1]*[1 0 0 0;0 cos(pi/2) -sin(pi/2) 0;0 sin(pi/2) cos(pi/2) 0;0 0 0 1];

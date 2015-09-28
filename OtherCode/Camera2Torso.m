@@ -1,7 +1,6 @@
-function [pointTorso]=fromCamera2Torso(pointCamera,anglesHead)
+function pointTorso=Camera2Torso(pointCamera,anglesHead)
 
 global CAMERA_ANGLES
-
 global NeckOffsetZ
 
 roll=anglesHead(1);
@@ -21,15 +20,10 @@ R=[cy*cp, cy*sp*sr-sy*cr, cy*sp*cr+sy*sr;
 
 A=[R,CAMERA_ANGLES;zeros(1,3),1];
 
-pointCamera=[pointCamera;1];
+%pointCamera=[pointCamera;1];
 pointTorso=A*pointCamera;
 
-
 pointTorso=pointTorso+NeckOffsetZ;
-
-pointTorso
-
-
 
 
 
