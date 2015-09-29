@@ -4,8 +4,8 @@ global CAMERA_ANGLES
 global NeckOffsetZ
 
 roll=anglesHead(1);
-pitch=anglesHead(2);
-yaw=anglesHead(3);
+pitch=anglesHead(2);%+backAngles(2)
+yaw=anglesHead(3);%-backAngles(1)
 
 cp = cos(pitch);
 sp = sin(pitch);
@@ -23,26 +23,6 @@ A=[R,CAMERA_ANGLES;zeros(1,3),1];
 %pointCamera=[pointCamera;1];
 pointTorso=A*pointCamera;
 
-pointTorso=pointTorso+NeckOffsetZ;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+pointTorso(3)=pointTorso(3)+NeckOffsetZ;
 
 end

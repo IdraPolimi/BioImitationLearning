@@ -4,7 +4,7 @@ global rot
 nPoints = 4;
 
 %im = grabAFrame();
-im = imread('fromNao2.jpg');
+im = imread('TableAndNao.jpg');
 pixelPoints = selectPointsInImage(im,nPoints);
 coordPoints =[];
 for i = 1:nPoints
@@ -42,7 +42,7 @@ zlabel('Z ');
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 pointsTorso = [];
 for i = 1:nPoints
-    pointsTorso=[pointsTorso, Camera2Torso(pointsCameraRot(:,i),[0.0;0.45;0.0])];
+    pointsTorso=[pointsTorso, Camera2Torso(pointsCameraRot(:,i),cameraAngles, backAngles)];
 end
 figure;
 plot3(pointsTorso(1,:),pointsTorso(2,:),pointsTorso(3,:),'kO-');
