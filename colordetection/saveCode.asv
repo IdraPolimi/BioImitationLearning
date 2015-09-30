@@ -1,0 +1,59 @@
+r=im(:,:,1); g=im(:,:,2); b=im(:,:,3);
+diff=imsubtract(r,rgb2gray(im));
+bw=im2bw(diff,0.18);
+area=bwareaopen(bw,300);
+rm=immultiply(area,r);  gm=g.*0;  bm=b.*0;
+image=cat(3,rm,gm,bm);
+im=imread('TableAndNao.jpg');
+r=im(:,:,1); g=im(:,:,2); b=im(:,:,3);
+diff=imsubtract(g,rgb2gray(im));
+imshow(diff)
+imshow(g)
+bw=im2bw(diff,0.03);%0.18
+imshow(bw)
+area=bwareaopen(bw,300);
+imshow(area)
+area=bwareaopen(bw,800);
+imshow(area)
+area=bwareaopen(bw,1000);
+imshow(area)
+area=bwareaopen(bw,2000);
+imshow(area)
+area=bwareaopen(bw,3000);
+imshow(area)
+area=bwareaopen(bw,5000);
+imshow(area)
+Color_Detect
+area=bwareaopen(bw,5000);
+imshow(area)
+area=bwareaopen(bw,7000);
+imshow(area)
+diff=imsubtract(g,rgb2gray(im));
+diff=medfilt2(diff,[3 3]);
+imshow(diff)
+diff=imsubtract(g,rgb2gray(im));
+figure
+diff1=medfilt2(diff,[3 3]);
+imshow(diff1)
+imshow(diff)
+figure
+imshow(diff1)
+diff1=medfilt2(diff,[10 10]);
+imshow(diff1)
+bw=im2bw(diff1,0.03);
+diff1
+imshow(bw)
+area=bwareaopen(bw,5000);
+imshow(area)
+area=bwareaopen(bw,8000);
+imshow(area)
+indexes=find(area>0)
+minindexes=min(indexes);
+maxindexes=max(indexes);
+maxindexes
+minindexes
+c=imcontour(area);
+[B,L,N,A]=bwboundaries(area);
+figure
+boundary = B{1};
+plot(boundary(:,2), boundary(:,1), 'k', 'LineWidth', 2)

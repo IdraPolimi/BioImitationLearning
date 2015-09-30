@@ -16,8 +16,9 @@ pointsCamera=(pointsCamera'*rot)';
 pointsTorso=Camera2Torso(pointsCamera,headangles);
 
 MOTION=ALMotionProxy('192.168.1.100',9559);
-pointsPos=[pointsTorso(1)/1000,pointsTorso(2)/1000,pointsTorso(3)/1000,0,0,0]
-MOTION.setPosition('LArm',int16(0),pointsPos,0.8,int16(7));
+pointsPos=[pointsTorso(1)/1000,pointsTorso(2)/1000,pointsTorso(3)/1000,0,0,0];
+pointsPos
+MOTION.positionInterpolation('LArm',int16(0),pointsPos,int16(7),[5],true);
 
 
 

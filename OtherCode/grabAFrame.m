@@ -23,6 +23,6 @@ imBlueIdx  = rgb(3:3:3*1280*960);
     end
 
 imshow(image);
-imwrite(image,'TableAndNao.jpg');
+imwrite(image,'TableAndNaoWithObj.jpg');
 end
 
