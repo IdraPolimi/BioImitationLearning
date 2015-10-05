@@ -1,4 +1,4 @@
-function [major,minor,cent]=findObstacle(imBackground, imForeground, threshold)
+function [major,minor,cent,filtSaturTh]=findObstacle(imBackground, imForeground, threshold)
 
 imBackground=im2double(imBackground);
 imForeground=im2double(imForeground);
@@ -15,7 +15,7 @@ imDiff = abs(imDiff)./(std2(rgb2gray(imForeground)-rgb2gray(imBackground)))>thre
 se=strel('disk',10,4);
 imDiff=imerode(imDiff,se);
 imDiff=imdilate(imDiff,se);
-%imDiff = abs(imDiff)>threshold;
+
 
 
 hsvImg = rgb2hsv(imForeground);

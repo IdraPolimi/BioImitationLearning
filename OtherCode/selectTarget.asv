@@ -1,0 +1,27 @@
+function [center,major,minor]=selectTarget(image,stats)
+
+
+imshow(im2)
+viscircles(stats.Centroid,((stats.MajorAxisLength+stats.MinorAxisLength)/4));
+
+[xi, yi, ~] = ginput(1);
+
+matClick=repmat()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+end
