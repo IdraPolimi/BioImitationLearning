@@ -1,34 +1,66 @@
-function [cx,cy,ray]=findObstacle(img)
+function [center,minor,major]=findObstacle(imBackground, imForeground, threshold)
 
-r=im(:,:,1); g=im(:,:,2); b=im(:,:,3);
-diff=imsubtract(g,rgb2gray(im));
-bw=im2bw(diff,0.03);%0.18
-area=bwareaopen(bw,8000);
-indexes=find(area>0)
-minindexes=min(indexes);
-maxindexes=max(indexes);
-c=imcontour(area);
-[B,~,~,~]=bwboundaries(area);
-boundary = B{1};
-im(minrow+centerrow-5:minrow+centerrow+5,mincol+centercol-5:mincol+centercol+5,:)=255;
-centerx=mincol+centercol;
-centery=minrow+centerrow;
-raggio=max(sqrt((boundary(:,2)-centerx).^2+(boundary(:,1)-centery).^2));
+imBackground=im2double(imBackground);
+imForeground=im2double(imForeground);
+m1 = mean2(rgb2gray(imBackground));
+m2 = mean2(rgb2gray(imForeground));
+
+newImForeground = imForeground + (m1-m2);
+
+imDiff = rgb2gray(newImForeground)-rgb2gray(imBackground);
+
+
+imDiff = abs(imDiff)./(std2(rgb2gray(imBackground)-rgb2gray(imBackground)))>threshold;
+
+stats=regionprops(imDiff,'MajorAxisLength','MinorAxislength','Centroid')
+center=stats.Centroid
+minor=stats.MinorAxisLength
+major=stats.MajorAxisLength
+
+
+stats=regionprops(imDiff,'ConvexHull');
+chull=cat(1,stats.ConvexHull);
+
+imshow(imDiff);
 hold on
-ang=0:0.01:2*pi;
-xp=raggio*cos(ang);
-yp=raggio*sin(ang);
-plot(centery+xp,centerx+yp);
+plot(chull(:,1),chull(:,2),'-');
+% [B,~,~,~]=bwboundaries(imDiff);
+% 
+% ind = 0;
+% maxSize = 0;
+% for i = 1:size(B)
+%     if( size(B{i},1)>maxSize)
+%         maxSize = size(B{i},1);
+%         ind = i;
+%     end
+% end
+% 
+% boundary = B{ind}
+% 
+% maxcol=max(boundary(:,2));
+% mincol=min(boundary(:,2));
+% centercol=(maxcol-mincol)/2;
+% maxrow=max(boundary(:,1));
+% minrow=min(boundary(:,1));
+% centerrow=(maxrow-minrow)/2;
+% imForeground(minrow+centerrow-5:minrow+centerrow+5,mincol+centercol-5:mincol+centercol+5,:)=255;
+% figure 
+% imshow(imForeground)
+% cx=mincol+centercol;
+% cy=minrow+centerrow;
+% ray=max(sqrt((boundary(:,2)-cx).^2+(boundary(:,1)-cy).^2));
+
+% hold on
+% ang=0:0.01:2*pi;
+% xp=ray*cos(ang);
+% yp=ray*sin(ang);
+% plot(cx+xp,cy+yp);
+
+% raymin=min(sqrt((boundary(:,2)-cx).^2+(boundary(:,1)-cy).^2));
 
 
-
-
-
-
-
-
-
-
+% t=linspace(0,2*pi);
+% plot(raymin*cos(t)+cx,ray*sin(t)+cy);
 
 
 

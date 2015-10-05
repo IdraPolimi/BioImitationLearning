@@ -21,8 +21,6 @@ imBlueIdx  = rgb(3:3:3*1280*960);
             v = v+3;
         end
     end
-
-imshow(image);
-imwrite(image,'TableAndNaoWithObj.jpg');
+imwrite(image,'NaoChoice.jpg');
 end
 
