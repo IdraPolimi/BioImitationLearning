@@ -1,4 +1,4 @@
-function image = grabAFrame()
+function image = grabAFrame(imageName)
 
 video = ALVideoDeviceProxy('10.79.5.60',9559);
 video.subscribeCamera('matlab',int16(0),int16(3),int16(11),int16(25));
@@ -21,6 +21,6 @@ imBlueIdx  = rgb(3:3:3*1280*960);
             v = v+3;
         end
     end
-imwrite(image,'NaoChoice.jpg');
+imwrite(image,imageName);
 end
 
