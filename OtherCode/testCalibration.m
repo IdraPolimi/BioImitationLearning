@@ -3,10 +3,10 @@
 close all
 
 global rot
-nPoints = 4;
+nPoints = 5;
 
 %im = grabAFrame();
-im = imread('TableAndNao.jpg');
+im = imread('nostrafusion.jpg');
 pixelPoints = selectPointsInImage(im,nPoints);
 coordPoints =[];
 for i = 1:nPoints
@@ -44,7 +44,7 @@ zlabel('Z ');
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 pointsTorso = [];
 for i = 1:nPoints
-    pointsTorso=[pointsTorso, Camera2Torso(pointsCameraRot(:,i),cameraAngles, backAngles)];
+    pointsTorso=[pointsTorso, Camera2Torso(pointsCameraRot(:,i),getHeadAngles())];
 end
 figure;
 plot3(pointsTorso(1,:),pointsTorso(2,:),pointsTorso(3,:),'kO-');

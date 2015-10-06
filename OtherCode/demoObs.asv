@@ -1,9 +1,9 @@
 function demoObs()
 
-IP='10.79.5.60';
+
 load('globalvar.m');
 
-[ETran,ERot]=preCalibration();
+[ETran,ERot]=preCalibration()
 
 global FC
 global CC
@@ -12,8 +12,8 @@ global rot
 
 grabAFrame('NaoEmptyTable.jpg');
 
-textproxy = ALTextToSpeechProxy(IP,9559);
-mem= ALMemoryProxy(IP,9559);
+textproxy = ALTextToSpeechProxy('10.79.5.60',9559);
+mem= ALMemoryProxy('10.79.5.60',9559);
 
 
 textproxy.say('Put the objects on the table!');

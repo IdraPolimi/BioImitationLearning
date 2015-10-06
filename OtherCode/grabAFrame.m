@@ -1,7 +1,7 @@
-function image = grabAFrame(imageName)
+function image = grabAFrame(imageName,index)
 
 video = ALVideoDeviceProxy('10.79.5.60',9559);
-video.subscribeCamera('matlab',int16(0),int16(3),int16(11),int16(25));
+video.subscribeCamera('matlab',int16(index),int16(3),int16(11),int16(25));
 res = video.getImageRemote('matlab');
 rgb  = res{7}';
 video.unsubscribe('matlab');
