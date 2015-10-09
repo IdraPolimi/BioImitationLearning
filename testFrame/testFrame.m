@@ -35,8 +35,17 @@ cameraPos(3)=cameraPos(3)+NeckOffsetZ
 pointT=pointR'+cameraPos
 
 
+%%%%
+% [0;0;0]
+% [62;62;0]
+% [93;62;0]
+% [124;93;0]
+% [93;155;0]
 
-
+%radianti testa 29.5
+% ans =
+% 
+%          0    0.5092   -0.0123
 
 
 
