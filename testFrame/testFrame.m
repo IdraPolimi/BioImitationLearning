@@ -15,7 +15,7 @@ pointD
 angles=getHeadAngles(0);
 rollH=angles(1);
 yawH=angles(3);
-pitchH=-angles(2);
+pitchH=- angles(2)-0.021;%- 1.2°
 cpCP = cos(pitchH);
 spCP = sin(pitchH);
 crCP = cos(rollH);
@@ -49,7 +49,8 @@ pointT=pointR'+cameraPos
 
 
 
-
+%%%%
+%newangles=[0 ;0.532256126403809 ;-0.029187917709351]
 
 
 

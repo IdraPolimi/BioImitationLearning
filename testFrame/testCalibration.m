@@ -6,17 +6,17 @@ global rot
 nPoints = 5;
 
 %im = grabAFrame();
-im = imread('TestFrame.jpg');
+im = imread('Nao3Prova.jpg');
 pixelPoints = selectPointsInImage(im,nPoints);
 coordPoints =[];
 for i = 1:nPoints
     coordPoints = [coordPoints,input('Point in mm as column vector: ')];
 end
-[~,ETran,ERot,~,~,~,~] = compute_extrinsic(pixelPoints,coordPoints,FC,CC,KC,ALPHA_C);
+[~,MarkerETran,MarkerERot,~,~,error,~] = compute_extrinsic(pixelPoints,coordPoints,FC,CC,KC,ALPHA_C);
 
 coordPoints =[];
 for i = 1:nPoints
-    coordPoints = [coordPoints,UV2XY(pixelPoints(:,i),FC,CC,ALPHA_C,ERot,ETran,0)];
+    coordPoints = [coordPoints,UV2XY(pixelPoints(:,i),FC,CC,ALPHA_C,MarkerERot,MarkerETran,0)];
 end
 
 figure;
@@ -24,7 +24,7 @@ plot(coordPoints(2,:),coordPoints(1,:));
 
 pointsCamera = [];
 for i = 1:nPoints
-    pointsCamera = [pointsCamera,fromWorldToCamera(ERot,ETran, coordPoints(:,i))];
+    pointsCamera = [pointsCamera,fromWorldToCamera(MarkerERot,MarkerETran, coordPoints(:,i))];
 end
 
 figure;

@@ -11,11 +11,12 @@ hold on; % and keep it there while we plot
 nclick=0;
 
 while nclick<n
-    [xi, yi, ~] = ginput(1);     % get a point
+    [xi, yi, ~] = ginput(1);
+    [xxi] = cornerfinder([xi;yi],image,5,5);% get a point
     k = k + 1;
-    pts(1,k) = xi;
-    pts(2,k) = yi;
-    plot(xi, yi, 'go');         % first point on its own
+    pts(1,k) = xxi(1);
+    pts(2,k) = xxi(2);
+    plot(xxi(1), xxi(2), 'go');         % first point on its own
     nclick=nclick+1;  
 end
 hold off;
