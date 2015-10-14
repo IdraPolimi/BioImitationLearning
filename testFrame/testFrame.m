@@ -1,8 +1,9 @@
-function pointT=testFrame(pointS,ERot,ETran)
+function [pointT,cameraPos]=testFrame(pointS,ERot,ETran)
 
 global rot
-global CAMERA_ANGLES_UP
+
 global NeckOffsetZ
+global CAMERA_ANGLES_UP
 
 %punto mondo in sistema camera,con sistema riferimento sballato
 pointC=ERot*pointS+ETran;
@@ -12,10 +13,21 @@ pointC
 pointD=[pointC;1]'*rot;
 pointD
 
+%[pointR,cameraPos]=cameraPosition([0;0.408002138137817;-0.018450021743774],0,pointD);%UP CAMERA
+%[pointR,cameraPos]=cameraPosition([0;0.408002138137817;-0.018450021743774],1,pointD);%DOWN CAMERA
+
+% cameraPos(3)=cameraPos(3)+NeckOffsetZ
+% 
+% pointT=pointR'+cameraPos
+
 angles=getHeadAngles(0);
+% rollH=0;
+% yawH=-0.018450021743774;
+% pitchH=- 0.408002138137817-0.021;%- 1.2°
 rollH=angles(1);
 yawH=angles(3);
-pitchH=- angles(2)-0.021;%- 1.2°
+pitchH=-angles(2)-0.021;
+%pitchH=- 0.408002138137817-0.6928957;%- 39.7°
 cpCP = cos(pitchH);
 spCP = sin(pitchH);
 crCP = cos(rollH);
@@ -27,9 +39,30 @@ RCP=[cyCP*cpCP, cyCP*spCP*srCP-syCP*crCP, cyCP*spCP*crCP+syCP*srCP;
 syCP*cpCP, syCP*spCP*srCP+cyCP*crCP, syCP*spCP*crCP-cyCP*srCP;
 -spCP, cpCP*srCP,cpCP*crCP];
 
-%giro la camera che era ancora storta
 pointR=pointD(1:3)*RCP;
-cameraPos=(CAMERA_ANGLES_UP'*RCP)';
+
+% rollH=0;
+% yawH=-0.018450021743774;
+% pitchH=- 0.408002138137817;%- 1.2°
+rollH=angles(1);
+yawH=angles(3);
+pitchH=-angles(2);
+%pitchH=- 0.408002138137817;%- 39.7°
+cpCP = cos(pitchH);
+spCP = sin(pitchH);
+crCP = cos(rollH);
+srCP = sin(rollH);
+cyCP = cos(yawH);
+syCP = sin(yawH);
+
+R=[cyCP*cpCP, cyCP*spCP*srCP-syCP*crCP, cyCP*spCP*crCP+syCP*srCP;
+syCP*cpCP, syCP*spCP*srCP+cyCP*crCP, syCP*spCP*crCP-cyCP*srCP;
+-spCP, cpCP*srCP,cpCP*crCP];
+
+%giro la camera che era ancora storta
+
+cameraPos=(CAMERA_ANGLES_UP'*R)';
+%cameraPos=(CAMERA_ANGLES_DOWN'*R)';
 
 cameraPos(3)=cameraPos(3)+NeckOffsetZ
 pointT=pointR'+cameraPos
@@ -52,7 +85,12 @@ pointT=pointR'+cameraPos
 %%%%
 %newangles=[0 ;0.532256126403809 ;-0.029187917709351]
 
+%angles con scacchiera stampata
+%[0 ;0.408002138137817 ;-0.018450021743774]
 
+%ultimi angoli
+
+%[0    0.5261    0.0184]
 
 
 end

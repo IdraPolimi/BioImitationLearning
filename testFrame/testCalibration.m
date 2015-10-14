@@ -6,7 +6,7 @@ global rot
 nPoints = 5;
 
 %im = grabAFrame();
-im = imread('Nao3Prova.jpg');
+im = imread('finalUpNao.jpg');
 pixelPoints = selectPointsInImage(im,nPoints);
 coordPoints =[];
 for i = 1:nPoints
