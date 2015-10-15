@@ -8,7 +8,7 @@ function backStraight()
 
 while(abs(backVal)>0.001)
  
- delta=backVal;
+ delta=0.05*backVal;
  actual_left=mot.getAngles('LHipPitch',true);
  actual_right=mot.getAngles('RHipPitch',true);
 
@@ -16,8 +16,8 @@ while(abs(backVal)>0.001)
  newright=cell2mat(actual_right)+delta;
  
  
- mot.angleInterpolationWithSpeed('LHipPitch',newleft,0.4);
- mot.angleInterpolationWithSpeed('RHipPitch',newleft,0.4);
+ mot.angleInterpolationWithSpeed({'LHipPitch','RHipPitch'},{newleft,newright},0.4);
+ %mot.angleInterpolationWithSpeed('RHipPitch',newright,0.1);
  
  
  
