@@ -1,0 +1,158 @@
+\begin{Topic}[Introduction]
+Game Theory focuses its attention on the interaction among independent and self-interested agents, trying to study their behaviors mathematically; all the emerging concepts have been successfully applied to different kind of disciplines, such as Economics, Biology and Computer Science.
+
+In order to understand the following sections, a brief introduction to some useful concepts and a recall of the notations is needed.
+
+In Game Theory, a \emph{game} is formally defined by a pair ($M$,$\sigma$), where $M$ is called \emph{mechanism}, representing how agents interact, and $\sigma$ is the set of \emph{strategies}, that describes how agents will play. There exist three different types of mechanisms:
+\begin{itemize}
+\item Strategic-form game
+\item Extensive-form game
+\item Bayesian-form game
+\end{itemize}
+
+These lecture notes focus on the first type of game, the \emph{normal} or \emph{strategic} form, which is the most familiar representation of strategic interactions and is formally defined as (Eq. \ref{eq:strategicForm}):
+
+\begin{equation}
+M = (N, \{A\}_i, X, f, \{U\}_i)
+\label{eq:strategicForm}
+\end{equation}
+
+where $N$ is the set of agents, $\{A\}_{i \in N}$ is the set of action for agent $i$, $X$ is the set of outcomes, $f: A_1 \times A_2 \times \dots \times A_n \rightarrow X$ is a function that maps actions of agents to an outcome, and $U_i: X \rightarrow \mathbb{R}$ describes the utility function of agent $i$.
+
+A particular kind of game is called \emph{Constant-Sum game}; in this kind of game the following hold (Eq. \ref{eq:const-sum-game}):
+
+\begin{equation}
+\sum \limits_{i=1}^N u_i(x) = const \qquad \forall x
+\label{eq:const-sum-game}
+\end{equation}
+
+If a game does not respect this property, it is called \emph{Bimatrix game}.
+
+A natural way to represent constant-sum games is via an n-dimensional matrix, where $n$ is the number of players; as an example, Table \ref{tab:rps} reports the matrix that describes the ''Rock-Paper-Scissor" game.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{ccccc}
+ &  & \multicolumn{3}{c}{Agent 2} \\ \cline{3-5} 
+ & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{\textbf{R}} & \multicolumn{1}{c|}{\textbf{P}} & \multicolumn{1}{c|}{\textbf{S}} \\ \cline{2-5} 
+\multicolumn{1}{c|}{} & \multicolumn{1}{c|}{\textbf{R}} & \multicolumn{1}{c|}{T} & \multicolumn{1}{c|}{W2} & \multicolumn{1}{c|}{W1} \\ \cline{2-5} 
+\multicolumn{1}{c|}{Agent 1} & \multicolumn{1}{c|}{\textbf{P}} & \multicolumn{1}{c|}{W1} & \multicolumn{1}{c|}{T} & \multicolumn{1}{c|}{W2} \\ \cline{2-5} 
+\multicolumn{1}{c|}{} & \multicolumn{1}{c|}{\textbf{S}} & \multicolumn{1}{c|}{W2} & \multicolumn{1}{c|}{W1} & \multicolumn{1}{c|}{T} \\ \cline{2-5} 
+\end{tabular}
+\caption{The Rock-Paper-Scissor game; T = tie, $W_1$ = Agent 1 wins, $W_2$ = Agent 2 wins.}
+\label{tab:rps}
+\end{table}
+
+On this game, it is possible to define two utility functions $U_1$ and $U_2$ for the two agents respectively.
+
+\begin{align*} 
+& U_1 =  \begin{cases} 1, & x = W_1 \\ -1, & x = W_2 \\ 0, & x = T \end{cases}
+& U_2 =  \begin{cases} -1, & x = W_1 \\ 1, & x = W_2 \\ 0, & x = T \end{cases}
+\end{align*} 
+
+A \emph{strategy} $\sigma_i$ for agent $i$ is defined as a probability distribution over the set of actions $A_i$; if we denote the probability with which the agent $i$ plays an action $j$ with $x_{i,j}$, the two followings property must holds:
+\begin{enumerate}
+\item $\mathbf{x_i} \geq \mathbf{0}$
+\item $ \mathbf{1^Tx_i} = 1$
+\end{enumerate}
+
+A \emph{strategy profile} $\sigma$ is the collection of one strategy per agent (Eq. \ref{eq:strategyProfile}).
+
+\begin{equation}
+\sigma = (\sigma_1, \sigma_2, \dots, \sigma_{|N|})
+\label{eq:strategyProfile}
+\end{equation}
+
+As an example, for the Rock-Paper-Scissor strategies for the two players can be:
+
+\begin{align*} 
+& x_1 =  \begin{cases} x_{1,R} = 0.4 \\ x_{1,P} = 0.4 \\ x_{1,S} = 0.2 \end{cases}
+& x_2 =  \begin{cases} x_{2,R} = 0.5 \\ x_{2,P} = 0.1 \\ x_{2,S} = 0.4 \end{cases}
+\end{align*} 
+
+A \emph{stategy} can be:
+
+\begin{itemize}
+\item pure, when all actions but one have a zero probability, i.e. the players will just select that action and play it; 
+\item mixed, if the players will choose randomly over the set of available actions according to a probability distribution;
+\item fully mixed, if it is mixed for each player and each action has a non-zero probability.
+\end{itemize}
+
+The \emph{belief} $\hat{\sigma_i}$ agent $i$ has over strategy $\sigma_j$ of agent $j$ describes how agent $i$ beliefs the agent $j$ will play.
+
+It is interesting to compute the \emph{expected utility} of each agent, i.e how much a player will get playing its strategy. If the game has a pure strategy, the expected utility is computed simply applying the strategy to the mechanism; otherwise for a (fully) mixed strategy game (Eq. \ref{eq:expectUti}):
+
+\begin{equation}
+E(u_i) = \mathbf{x}_1^T \mathbf{U}_i \prod_{k \in N, k \ne i}\mathbf{x}_k
+\label{eq:expectUti}
+\end{equation}
+
+where $\mathbf{U}_i$ is the matrix of utilities of agent \emph{i}.
+
+A particular case are games with two players (Eq. \ref{eq:twoPlayerUtil}):
+\begin{equation}
+\begin{array}{r}
+E(u_1) = \mathbf{x}_1^T \mathbf{U_1} \mathbf{x}_2\\
+E(u_2) = \mathbf{x}_1^T \mathbf{U_2} \mathbf{x}_2
+\end{array}
+\label{eq:twoPlayerUtil}
+\end{equation}
+
+It is possibile now to compute the expected utility for both agent involved in the the Rock-Paper-Scissor game:
+
+\begin{equation*}
+U_1 = \begin{bmatrix}
+0 & -1 & 1 \\
+1 & 0 & -1 \\
+-1 & 1 & 0 
+\end{bmatrix} 
+\qquad 
+\mathbf{x}_1 = \begin{bmatrix}
+0.4 \\
+0.4 \\
+0.2 
+\end{bmatrix}
+\qquad 
+\mathbf{x}_2 = \begin{bmatrix}
+0.5 \\
+0.1 \\
+0.2 
+\end{bmatrix}
+\end{equation*}
+
+\bigskip
+\begin{equation*}
+E(u_1) = \begin{bmatrix}
+0.4 & 0.4 & 0.2
+\end{bmatrix} 
+\begin{bmatrix}
+0 & -1 & 1 \\
+1 & 0 & -1 \\
+-1 & 1 & 0 
+\end{bmatrix} 
+\begin{bmatrix}
+0.5 \\
+0.1 \\
+0.2 
+\end{bmatrix} = 0.24
+\end{equation*}
+
+Now, given a game, the strategy profile $\sigma$ and the belief $\mu_i$ of each agent, how is it possible to reason about that game? 
+
+In a single-agent decision theory, it is simply necessary to search for the optimal strategy for the agent, i.e. a list of actions that maximizes the agent's expected utility; with multiple agents this reasoning is more difficult, as the optimal strategy depends also on others' choices. It is thus necessary to identify a certain subset of outcomes, called \emph{solution concepts}, that are interesting in some sense. As two examples, the \emph{Pareto optimality} and the \emph{Nash equilibrium} have been defined.
+
+Given a solution concept, it is then interesting to study its \emph{complexity} and the \emph{best algorithms} to find it, as well as to characterize all the possible \emph{instances}.
+
+With all these definitions in mind, these lecture notes are organized as follows: 
+\begin{itemize}
+\item Topic~\ref{complex} will be about complexity;
+\item Topic~\ref{pareto} will describe the Pareto Optimality solution concept;
+\item Topic ~\ref{domination} will concern dominations of strategies;
+\item Topic ~\ref{domination} will discuss the MinMax/MaxMin solution concept;
+\item Topic ~\ref{domination} will present some advanced topics: ... 
+\end{itemize}
+
+\label{introduction}
+\end{Topic}
+
+
