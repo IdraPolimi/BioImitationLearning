@@ -31,18 +31,37 @@ k=300;
 %     pause(0.005);
 % end
 
-figure(1)
+
+figure(100)
+clf;
 plot3(angoli_finali(1,:),angoli_finali(2,:),angoli_finali(3,:), '-');
 axis equal
-hold on
+xlabel('X');
+ylabel('Y');
+zlabel('Z');
+
 drawnow
 
-timeLists=linspace(1,30,500);
+%angoliInversi = JacobianInverse(angoli_finali,@fLeftHand,zeros(4,1))    
 
-trajNao = mat2cell(angoli_finali,6,ones(1,500));
+% 
+% tFin = angoli_finali(:,2:end);
+% tInit = angoli_finali(:,1:end-1);
+% vel = (tFin-tInit)./0.0982
 
-%MOTION.positionInterpolation('LArm',int16(0),trajNao,int16(63),timeLists,true);
-
+for timeLists=1:1:500
+   %trajNao = mat2cell(angoli_finali,6,ones(1,500));
+    %MOTION.positionInterpolation('LArm',int16(0),trajNao,int16(7),timeLists,true);
+    figure(100)
+    hold on
+    h = plot3(angoli_finali(1,timeLists),angoli_finali(2,timeLists),angoli_finali(3,timeLists),'O');
+    if(timeLists>1)
+    delete(hOld);
+    end
+    MOTION.setPosition('LArm',int16(0),angoli_finali(:,timeLists),0.5,int16(7));
+    pause(0.1)
+    hOld =h;
+end
 
 end
 

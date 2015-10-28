@@ -42,10 +42,10 @@ for i=1:NUM_PRIMITIVE
             [w(:,i),t(:,i),pi_pesi(i),z(:,i),mean_policies(i,1)]=Nac(w(:,i),t(:,i),pi_pesi(i),z(:,i),x,y,R_ANG*(pi_pesi(i)/sum(pi_pesi(8:9))));
         end
     else
-        if (not(sum(pi_pesi(1:NUM_PRIMITIVE-2))))
+        if (not(sum(pi_pesi(1:NUM_PRIMITIVE))))
             [w(:,i),t(:,i),pi_pesi(i),z(:,i),mean_policies(i,1)]=Nac(w(:,i),t(:,i),pi_pesi(i),z(:,i),x,y,0);
         else
-            [w(:,i),t(:,i),pi_pesi(i),z(:,i),mean_policies(i,1)]=Nac(w(:,i),t(:,i),pi_pesi(i),z(:,i),x,y,R_CAR*(pi_pesi(i)/sum(pi_pesi(1:NUM_PRIMITIVE-2))));
+            [w(:,i),t(:,i),pi_pesi(i),z(:,i),mean_policies(i,1)]=Nac(w(:,i),t(:,i),pi_pesi(i),z(:,i),x,y,R_CAR*(pi_pesi(i)/sum(pi_pesi(1:NUM_PRIMITIVE))));
         end
     end
 end

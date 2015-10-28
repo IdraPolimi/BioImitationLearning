@@ -1,4 +1,3 @@
-
 %   variabili:
 %   x: vettore colonna (dimensione=#cluster)
 %   x_dmp: vettore colonna (dimensione=NUM_PRIMITIVE)
@@ -34,38 +33,38 @@ global G_EVO
 global COMPLETATO
 global check
 global pos_arrivo
-
 global ax
+global dcps
 
 %   Inizializzazioni  IDRA
-data = zeros(0);
-categories = zeros(0);
-%save('IDRA_Matlab/data/categories.mat','categories');
-%save('IDRA_Matlab/data/data.mat','data');
-output=zeros(10,1);
-
-%   Addestro IDRA
-while any(output==0) || isempty(output)
-    % Faccio questo perchè ho salvato i dati in 2 dataset
-    n=randi(29,1);
-    if(n<=9)
-        img = double(im_f(n).sig/255);
-    else
-        img = double(img_rand(n-9).sig/255);
-    end
-    signals(1).sig = img;
-    signals(1).filterName = 'LogPolarBW';
-    signals(1).instinct = 'None';
-    signals(2).sig = img;
-    signals(2).filterName = 'None';
-    signals(2).instinct = 'ballPosition';
-    n=randi(100,1);
-    signals(3).sig = stato(n,:);
-    signals(3).filterName = 'None';
-    signals(3).instinct = 'None';
-    [output, rs] = intentionalArchitecture(signals);
-    output;
-end
+% data = zeros(0);
+% categories = zeros(0);
+% %save('IDRA_Matlab/data/categories.mat','categories');
+% %save('IDRA_Matlab/data/data.mat','data');
+% output=zeros(10,1);
+% 
+% %   Addestro IDRA
+% while any(output==0) || isempty(output)
+%     % Faccio questo perchè ho salvato i dati in 2 dataset
+%     n=randi(29,1);
+%     if(n<=9)
+%         img = double(im_f(n).sig/255);
+%     else
+%         img = double(img_rand(n-9).sig/255);
+%     end
+%     signals(1).sig = img;
+%     signals(1).filterName = 'LogPolarBW';
+%     signals(1).instinct = 'None';
+%     signals(2).sig = img;
+%     signals(2).filterName = 'None';
+%     signals(2).instinct = 'ballPosition';
+%     n=randi(100,1);
+%     signals(3).sig = stato(n,:);
+%     signals(3).filterName = 'None';
+%     signals(3).instinct = 'None';
+%     [output, rs] = intentionalArchitecture(signals);
+%     output;
+% end
 
 %   Posizioni limite per il NAO
 %massimoNao =[-0.0106  ;  0.3168  ;  0.0761 ;  -2.0953  ;  0.1819  ;  1.7108];
@@ -77,7 +76,6 @@ end
 %IP='169.254.95.24';
 IP='10.79.5.170';
 PORT=9559;
-%PORT=54011;
 MOTION=ALMotionProxy(IP, PORT);
 PICTURE=ALVideoDeviceProxy(IP,PORT);
 MOTION.setStiffnesses('Body',1);
@@ -99,25 +97,25 @@ DOF=4;
 %   Non la uso in questa implementazione
 DURATA = 3; %imposto durata di ogni dmp 3s standard.
 %   Matrice covarianza delle basis function dell'attore
-SIGMA_ACTOR=diag(ones(1,10));
-
+SIGMA_ACTOR=diag(ones(1,6));
+MU_ACTOR = [-2,-1,0,1,2,3;-2,-1,0,1,2,3;-2,-1,0,1,2,3;-2,-1,0,1,2,3];
 %  Inizializzo i centri delle basis functions
 %im_f 20 immagini della pallina sul tavolo in posizioni diverse
-for i=1:NUM_PRIMITIVE
-    img = double(im_f(i).sig/255);
-    signals(1).sig = img;
-    signals(1).filterName = 'LogPolarBW';
-    signals(1).instinct = 'None';
-    signals(2).sig = img;
-    signals(2).filterName = 'None';
-    signals(2).instinct = 'ballPosition';
-    n=randi(100,1);
-    signals(3).sig = stato(n,:);
-    signals(3).filterName = 'None';
-    signals(3).instinct = 'None';
-    [MU_ACTOR(i,:), rs] = intentionalArchitecture(signals);
-end
-size(MU_ACTOR)
+% for i=1:NUM_PRIMITIVE
+%     img = double(im_f(i).sig/255);
+%     signals(1).sig = img;
+%     signals(1).filterName = 'LogPolarBW';
+%     signals(1).instinct = 'None';
+%     signals(2).sig = img;
+%     signals(2).filterName = 'None';
+%     signals(2).instinct = 'ballPosition';
+%     n=randi(100,1);
+%     signals(3).sig = stato(n,:);
+%     signals(3).filterName = 'None';
+%     signals(3).instinct = 'None';
+%     [MU_ACTOR(i,:), rs] = intentionalArchitecture(signals);
+% end
+
 %   Non implementata in questa versione
 %soglia=0;
 
@@ -143,9 +141,9 @@ meta_param=zeros(DOF,NUM_PRIMITIVE);
 % GOAL_INIT=meta_param;
 
 %    Inizializzo altri matrici utili
-dmp_attive=zeros(NUM_PRIMITIVE,1);
-nuove_dmp_attive=zeros(NUM_PRIMITIVE,1);
-temp=zeros(NUM_PRIMITIVE,1);
+%dmp_attive=zeros(NUM_PRIMITIVE,1);
+%nuove_dmp_attive=zeros(NUM_PRIMITIVE,1);
+%temp=zeros(NUM_PRIMITIVE,1);
 
 %   Inizializzo matrici di parametri per le policy pi_pesi, per le funzioni
 %   Q stato-azione delle policy e matrice delle eligilibity traces.
@@ -155,31 +153,31 @@ z = zeros(NUM_PRIMITIVE);
 
 %   Chiama Idra che analizza l'input visivo del nao. Restituisce la
 %   distanza dell'input corrente dai centri dei cluster presenti in IDRA.
-index=randi(29,1);
-if(index<=9)
-    POS_EFF = reward(index).sig;
-else
-    POS_EFF = reward_20(index-9).sig;
-end
-POS_EFF_REWARD=POS_EFF;
-POS_EFF=POS_EFF(1:3);
-if(index<=9)
-    img = double(im_f(index).sig/255);
-else
-    img = double(img_rand(index-9).sig/255);
-end
-signals(1).sig = img;
-signals(1).filterName = 'LogPolarBW';
-signals(1).instinct = 'None';
-signals(2).sig = img;
-signals(2).filterName = 'None';
-signals(2).instinct = 'ballPosition';
-n=randi(100,1);
-signals(3).sig = stato(n,:);
-signals(3).filterName = 'None';
-signals(3).instinct = 'None';
-[output, rs] = intentionalArchitecture(signals);
-x=output;
+% index=randi(29,1);
+% if(index<=9)
+%     POS_EFF = reward(index).sig;
+% else
+%     POS_EFF = reward_20(index-9).sig;
+% end
+% POS_EFF_REWARD=POS_EFF;
+% POS_EFF=POS_EFF(1:3);
+% if(index<=9)
+%     img = double(im_f(index).sig/255);
+% else
+%     img = double(img_rand(index-9).sig/255);
+% end
+% signals(1).sig = img;
+% signals(1).filterName = 'LogPolarBW';
+% signals(1).instinct = 'None';
+% signals(2).sig = img;
+% signals(2).filterName = 'None';
+% signals(2).instinct = 'ballPosition';
+% n=randi(100,1);
+% signals(3).sig = stato(n,:);
+% signals(3).filterName = 'None';
+% signals(3).instinct = 'None';
+% [output, rs] = intentionalArchitecture(signals);
+% x=output;
 
 
 %   Sceglie i pesi delle primitive della prima azione. I pesi ammissibili
@@ -192,9 +190,13 @@ x=output;
 %     dist(i,1)=(sum((x'-MU_ACTOR(i,:)).^2)).^(1/2);
 % end
 % [elemento,posizione]=min(dist);
+
+
+POS_EFF_REWARD = [0.0;0.20;0.10;0;0;0]; 
 pi_pesi=randfixedsum(4,1,1,0,1);
 ax=1;
 
+x = cell2mat(MOTION.getPosition('LArm', int8(0), false));
 
 
 %   Inizia l'apprendimento fino a convergenza
@@ -236,31 +238,34 @@ while check<200
     %   Calcolo la combinazione di primitive.
     %500 sono le posizioni nel tempo che il Nao interpola per muoversi.
     pi_f=zeros(6,500);
-    
+    disp('somma pesi:');
+     sum(pi_pesi(1:NUM_PRIMITIVE))
     %MODIFICARE IL DATASET
     %le prime 7 primitive sono di allungamento
     for i=1:NUM_PRIMITIVE
         %if(pi_pesi(i)>soglia)
             %   Ogni primitiva ha 4 DOF con un ID [i i+1 i+2 i+3]
             prim=pi_base((1:6)+6*(i-1),delta_t);
+            
+           
             pi_f = pi_f + (pi_pesi(i)*prim)/sum(pi_pesi(1:NUM_PRIMITIVE));
-            figure(10+i)
-            plot3(prim(1,:),prim(2,:),prim(3,:),'-')
-            hold on
+%              hold on
+%              figure(ITERAZIONE_NUMERO+1)
+%              plot3(pi_pesi(i)*prim(1,:)/sum(pi_pesi(1:NUM_PRIMITIVE)),pi_pesi(i)*prim(2,:)/sum(pi_pesi(1:NUM_PRIMITIVE)),pi_pesi(i)*prim(3,:)/sum(pi_pesi(1:NUM_PRIMITIVE)),'-');
+%              axis equal
         %end
     end
-    
-    
-   % le rimanenti 2 di rotazione
-    for i=8:NUM_PRIMITIVE
-        %if(pi_pesi(i)>soglia)
-            primYaw=pi_base((1:6)+6*(i-1),delta_t);
-            % Se Coreographe registrasse i movimenti relativi...
-            primYaw([1,3,4],:)=0;
-            primYaw
-            pi_f = pi_f + (pi_pesi(i)*primYaw)/sum(pi_pesi(8:NUM_PRIMITIVE));
-        %end
-    end
+        
+%    % le rimanenti 2 di rotazione
+%     for i=8:NUM_PRIMITIVE
+%         %if(pi_pesi(i)>soglia)
+%             primYaw=pi_base((1:6)+6*(i-1),delta_t);
+%             % Se Coreographe registrasse i movimenti relativi...
+%             primYaw([1,3,4],:)=0;
+%             primYaw
+%             pi_f = pi_f + (pi_pesi(i)*primYaw)/sum(pi_pesi(8:NUM_PRIMITIVE));
+%         %end
+%     end
 
     
     
@@ -273,12 +278,13 @@ while check<200
 %         pi_f(i,find(pi_f(i,:)<minimoNao(i)))=minimoNao(i);
 %     end
     %ct=obstacle_avoidance_Idra(pi_f);
+    
     esegui_nao(pi_f);
     
     
     %-------------------------------------------------------------------------
     %   Ricevo/Calcolo il reward
-    r=Calcola_reward()
+    r=Calcola_reward();
     
     
     %-------------------------------------------------------------------------
@@ -287,23 +293,23 @@ while check<200
     %MOTION.setPosition('LArm',int8(0),pos_iniziali(:,r1)',0.7,int8(63))
     MOTION.setAngles(NAMES, stato(r1,:),0.5);
     pause(3)
-    if(index<=9)
-        img = double(im_f(index).sig/255);
-    else
-        img = double(img_rand(index-9).sig/255);
-    end
-    signals(1).sig = img;
-    signals(1).filterName = 'LogPolarBW';
-    signals(1).instinct = 'None';
-    signals(2).sig = img;
-    signals(2).filterName = 'None';
-    signals(2).instinct = 'ballPosition';
-    signals(3).sig = stato(r1,:);
-    signals(3).filterName = 'None';
-    signals(3).instinct = 'None';
-    [output, rs] = intentionalArchitecture(signals);
-    y=output;
-    
+%     if(index<=9)
+%         img = double(im_f(index).sig/255);
+%     else
+%         img = double(img_rand(index-9).sig/255);
+%     end
+%     signals(1).sig = img;
+%     signals(1).filterName = 'LogPolarBW';
+%     signals(1).instinct = 'None';
+%     signals(2).sig = img;
+%     signals(2).filterName = 'None';
+%     signals(2).instinct = 'ballPosition';
+%     signals(3).sig = stato(r1,:);
+%     signals(3).filterName = 'None';
+%     signals(3).instinct = 'None';
+%     [output, rs] = intentionalArchitecture(signals);
+%     y=output;
+   y = cell2mat(MOTION.getPosition('LArm', int8(0), false));
     
     %-------------------------------------------------------------------------
     %   Esegue una iterazione dell'algoritmo di apprendimento dei
@@ -326,38 +332,37 @@ while check<200
     %-------------------------------------------------------------------------
     %   Esegue una iterazione dell'algoritmo di combinazione di primitive.
     [w,t,pi_pesi,z]=modulo_gangli(x,y,r,w,t,pi_pesi,z);
-    pi_pesi
-    
+      
     
     %-------------------------------------------------------------------------
-    % Prendo i dati per i grafici
-    if(check==0)
-        x_evo=x;
-        r_evo=r;
-        w_evo=zeros(size(w,1),size(w,2));
-        t_evo=zeros(size(t,1),size(t,2));
-        pi_pesi_evo=pi_pesi;
-        z_evo=zeros(size(z,1),size(z,2));
-        teta_metap_evo=teta_metap;
-        meta_param_evo=meta_param;
-        r_ang_evo=R_ANG;
-        r_car_evo=R_CAR;
-        g_evo= G_EVO;
-        pos_arrivo_evo=pos_arrivo;
-    else
-        x_evo= [x_evo x];
-        r_evo= [r_evo r];
-        w_evo=[w_evo w];
-        t_evo= [t_evo t];
-        pi_pesi_evo= [pi_pesi_evo pi_pesi];
-        z_evo= [z_evo z];
-        teta_metap_evo=[teta_metap_evo teta_metap];
-        meta_param_evo=[meta_param_evo meta_param];
-        r_ang_evo=[r_ang_evo R_ANG];
-        r_car_evo=[r_car_evo R_CAR];
-        g_evo=[g_evo G_EVO];
-        pos_arrivo_evo= [pos_arrivo_evo pos_arrivo] ;
-    end
+%     % Prendo i dati per i grafici
+%     if(check==0)
+%         x_evo=x;
+%         r_evo=r;
+%         w_evo=zeros(size(w,1),size(w,2));
+%         t_evo=zeros(size(t,1),size(t,2));
+%         pi_pesi_evo=pi_pesi;
+%         z_evo=zeros(size(z,1),size(z,2));
+%         teta_metap_evo=teta_metap;
+%         meta_param_evo=meta_param;
+%         r_ang_evo=R_ANG;
+%         r_car_evo=R_CAR;
+%         g_evo= G_EVO;
+%         pos_arrivo_evo=pos_arrivo;
+%     else
+%         x_evo= [x_evo x];
+%         r_evo= [r_evo r];
+%         w_evo=[w_evo w];
+%         t_evo= [t_evo t];
+%         pi_pesi_evo= [pi_pesi_evo pi_pesi];
+%         z_evo= [z_evo z];
+%         teta_metap_evo=[teta_metap_evo teta_metap];
+%         meta_param_evo=[meta_param_evo meta_param];
+%         r_ang_evo=[r_ang_evo R_ANG];
+%         r_car_evo=[r_car_evo R_CAR];
+%         g_evo=[g_evo G_EVO];
+%         pos_arrivo_evo= [pos_arrivo_evo pos_arrivo] ;
+%     end
     
     %------------------------------------------------------------------------
     %   Aggiorno lo stato corrente
@@ -365,10 +370,10 @@ while check<200
     check=check+1;
 end
 
-COMPLETATO = COMPLETATO(2:size(COMPLETATO,2));
+%COMPLETATO = COMPLETATO(2:size(COMPLETATO,2));
 %-------------------------------------------------------------------------
 % Salvo i dati per i grafici
-save('dati_test_IDRA.mat','x_evo','r_evo','w_evo','t_evo','pi_pesi_evo','z_evo','MEAN_POLICIES','teta_metap_evo', 'meta_param_evo','r_ang_evo','r_car_evo','g_evo','COMPLETATO','index','pos_arrivo_evo');
+%save('dati_test_IDRA.mat','x_evo','r_evo','w_evo','t_evo','pi_pesi_evo','z_evo','MEAN_POLICIES','teta_metap_evo', 'meta_param_evo','r_ang_evo','r_car_evo','g_evo','COMPLETATO','index','pos_arrivo_evo');
 
 
 

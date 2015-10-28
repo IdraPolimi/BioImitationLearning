@@ -31,16 +31,37 @@ k=300;
 %     pause(0.005);
 % end
 
+figure(100)
+clf;
 plot3(angoli_finali(1,:),angoli_finali(2,:),angoli_finali(3,:), '-');
 axis equal
-hold on
+xlabel('X');
+ylabel('Y');
+zlabel('Z');
 
-timeLists=linspace(1,30,500);
+drawnow
 
-trajNao = mat2cell(angoli_finali,6,ones(1,500));
-
-MOTION.positionInterpolation('LArm',int16(0),trajNao,int16(63),timeLists,true);
-
+disp('Stato iniziale DMP: ');
+angoli_finali(1:3,1)
+% 
+% tFin = angoli_finali(:,2:end);
+% tInit = angoli_finali(:,1:end-1);
+% vel = (tFin-tInit)./0.0982
+h = 0;
+for timeLists=1:1:500
+   
+    %trajNao = mat2cell(angoli_finali,6,ones(1,500));
+    %MOTION.positionInterpolation('LArm',int16(0),trajNao,int16(7),timeLists,true);
+    figure(100)
+    hold on
+    if(~h)
+        delete(h)
+    end
+    h = plot3(angoli_finali(1,timeLists),angoli_finali(2,timeLists),angoli_finali(3,timeLists),'O');
+    
+    MOTION.setPosition('LArm',int16(0),angoli_finali(:,timeLists),0.5,int16(7));
+    pause(0.005)
+end
 
 end
 

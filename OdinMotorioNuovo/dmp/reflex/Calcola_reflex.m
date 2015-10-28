@@ -1,5 +1,6 @@
 global massimo
 global minimo
+global dcps;
 % massimo=1000*ones(1,4);
 % minimo=1000*ones(1,4);
 

@@ -62,8 +62,7 @@ T4=[ 0.34511, 0.34357, 0.34511, 0.34511, 0.34511, 0.34511, 0.34357, 0.34511, 0.3
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 for i=1:298
-leftMatrix(i,:)=fLeftHand([T3(i);T4(i);T2(i);T1(i)]);
-
+    leftMatrix(i,:)=fLeftHand([T3(i);T4(i);T2(i);T1(i)]);
 end;
 
 name1='ATNRokX';
@@ -81,37 +80,27 @@ dt  = 0.001;
 len=tau/dt;
 x=1:298;
 xx=linspace(1,298,floor(len+1)+ 3);
-n_rfs     = [15 15 15 15 15 15];
-time = (0:1:len)';
- index=1;
+n_rfs = [15 15 15 15 15 15];
+%time = (0:1:len)';
+index=1;
 for i=ID1:ID3
-   
     traj=csaps(x,leftMatrix(:,index)',0.9,xx);
-    
     Y=learn_dcp_batch_oa(i,dt,0,tau,n_rfs(index),0,traj,0,len);
+    T(:,index)=Y(:,1);%501 valori
     index=index+1;
-    T(:,i)=Y(:,1);%501 valori
-    
-   
-    %%%%%%%%%%%%%%per plottare
-    traj=traj(1:501)';
-    figure;
-    clf;
-    plot(time,Y(:,1),'b -o',time,traj,'r');
-    title('y');
-    aa=axis;
-    axis([min(time) max(time) aa(3:4)]);
-    %%%%%%%%%%%%%%%%%%%%%%
- 
     dcp('reset_state',i, traj(1));
     dcp('set_goal',i,traj(floor(len+1)),1);
-    goal(i)=T(floor(len+1),i);
+    %goal(i)=T(end,index);
+       
+%     %%%%%%%%%%%%%%per plottare
+%     traj=traj(1:501)';
+%     figure(11)
+%     plot(time,Y(:,1),'b -o',time,traj,'r');
+%     title('y');
+%     aa=axis;
+%     axis([min(time) max(time) aa(3:4)]);
+%     %%%%%%%%%%%%%%%%%%%%%%
 end
-
-
-
-
-
 
 % %rotazioni
 % learn_dcp_batch(ID4,leftMatrix(:,4)',name4);
@@ -119,30 +108,27 @@ end
 % learn_dcp_batch(ID6,leftMatrix(:,6)',name6);
  
  index=4;
- for i=ID4:ID6
+for i=ID4:ID6
     traj=csaps(x,leftMatrix(:,index)',0.9,xx);
-    
     Y=learn_dcp_batch_oa(i,dt,0,tau,n_rfs(index),0,traj,0,len);
+    T(:,index)=Y(:,1);%501 valori
     index=index+1;
-    T(:,i)=Y(:,1);%501 valori
-    
-   
-    %%%%%%%%%%%%%%per plottare
-    traj=traj(1:501)';
-    figure;
-    clf;
-    plot(time,Y(:,1),'b -o',time,traj,'r');
-    title('y');
-    aa=axis;
-    axis([min(time) max(time) aa(3:4)]);
-    %%%%%%%%%%%%%%%%%%%%%%
- 
     dcp('reset_state',i, traj(1));
     dcp('set_goal',i,traj(floor(len+1)),1);
-    goal(i)=T(floor(len+1),i);
+    %goal(i)=T(floor(len+1),i);
+%     %%%%%%%%%%%%%%per plottare
+%     traj=traj(1:501)';
+%     figure(i)
+%     plot(time,Y(:,1),'b -o',time,traj,'r');
+%     title('y');
+%     aa=axis;
+%     axis([min(time) max(time) aa(3:4)]);
+%     %%%%%%%%%%%%%%%%%%%%%%
 end
 
-
+  figure(11)
+  plot3(T(:,1),T(:,2),T(:,3),'-')
+  axis equal
 
 %%nao esegue primitiva
 % global MOTION
