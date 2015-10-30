@@ -58,9 +58,9 @@ T4=[ 0.26381, 0.26381, 0.26381, 0.26381, 0.26381, 0.26381, 0.26381, 0.26381, 0.2
 %     end
 % end
 
-
+T5=zeros(1,300);
 for i=1:300
-    leftMatrix(i,:)=fLeftHand([T3(i);T4(i);T2(i);T1(i)]);end;
+    leftMatrix(i,:)=fLeftHandH25([T3(i);T4(i);T2(i);T1(i);T5(i)]);end;
 
 name1='MoroX';
 name2='MoroY';
@@ -68,6 +68,7 @@ name3='MoroZ';
 name4='MoroWX';
 name5='MoroWY';
 name6='MoroWZ';
+namesCoords={name1, name2, name3, name4,name5,name6};
 %  learn_dcp_batch(ID1,leftMatrix(:,1)',name1);
 %  learn_dcp_batch(ID2,leftMatrix(:,2)',name2);
 %  learn_dcp_batch(ID3,leftMatrix(:,3)',name3);
@@ -82,7 +83,7 @@ time = (0:1:len)';
 index=1;
 for i=ID1:ID3
     traj=csaps(x,leftMatrix(:,index)',0.9,xx);
-    Y=learn_dcp_batch_oa(i,dt,0,tau,n_rfs(index),0,traj,0,len);
+    Y=learn_dcp_batch_oa(i,dt,0,tau,n_rfs(index),0,traj,0,len,namesCoords(index));
     T(:,index)=Y(:,1);%501 valori
     index=index+1;
     dcp('reset_state',i, traj(1));
@@ -105,30 +106,44 @@ end
 %  learn_dcp_batch(ID5,leftMatrix(:,5)',name5);
 %  learn_dcp_batch(ID6,leftMatrix(:,6)',name6);
 
-index=4;
-for i=ID4:ID6
-    traj=csaps(x,leftMatrix(:,index)',0.9,xx);
-    Y=learn_dcp_batch_oa(i,dt,0,tau,n_rfs(index),0,traj,0,len);
-    T(:,index)=Y(:,1);%501 valor
-    index=index+1;
-    dcp('reset_state',i, traj(1));
-    dcp('set_goal',i,traj(floor(len+1)),1);
-    %goal(i)=T(floor(len+1),i);
-    %     %%%%%%%%%%%%%%per plottare
-    %     traj=traj(1:501)';
-    % figure(i)
-    %
-    %     plot(time,Y(:,1),'b -o',time,traj,'r');
-    %     title('y');
-    %     aa=axis;
-    %     axis([min(time) max(time) aa(3:4)]);
-    %     %%%%%%%%%%%%%%%%%%%%%%
-    
-    
-end
-  figure(13)
-  plot3(T(:,1),T(:,2),T(:,3),'-')
-  axis equal
+% index=4;
+% for i=ID4:ID6
+%     traj=csaps(x,leftMatrix(:,index)',0.9,xx);
+%     Y=learn_dcp_batch_oa(i,dt,0,tau,n_rfs(index),0,traj,0,len,namesCoords(index));
+%     T(:,index)=Y(:,1);%501 valor
+%     index=index+1;
+%     dcp('reset_state',i, traj(1));
+%     dcp('set_goal',i,traj(floor(len+1)),1);
+%     %goal(i)=T(floor(len+1),i);
+%     %     %%%%%%%%%%%%%%per plottare
+%     %     traj=traj(1:501)';
+%     % figure(i)
+%     %
+%     %     plot(time,Y(:,1),'b -o',time,traj,'r');
+%     %     title('y');
+%     %     aa=axis;
+%     %     axis([min(time) max(time) aa(3:4)]);
+%     %     %%%%%%%%%%%%%%%%%%%%%%
+%     
+%     
+% end
+%   figure(13)
+%   plot3(T(:,1),T(:,2),T(:,3),'-')
+%   axis equal
+%   
+  %%nao esegue primitiva
+% global MOTION
+% MOTION.setStiffnesses('Body',1);
+% % 
+% % 
+% timeLists=linspace(1,10,501);
+% 
+% trajNao = mat2cell(T,ones(1,501),6);
+% 
+% 
+% MOTION.positionInterpolation('LArm',int16(0),trajNao,int16(63),timeLists,true);
+
+
 %  if(any(massimo==1000))
 %     massimo(1)=max(leftMatrix(:,1)');
 %     massimo(2)=max(leftMatrix(:,2)');

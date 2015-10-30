@@ -59,9 +59,9 @@ T4=[ 0.43255, 0.43255, 0.43255, 0.43255, 0.43255, 0.43255, 0.43255, 0.43255, 0.4
 %     end
 % end
 
-
+T5=zeros(1,272);
 for i=1:272
-leftMatrix(i,:)=fLeftHand([T3(i);T4(i);T2(i);T1(i)]);end;
+leftMatrix(i,:)=fLeftHandH25([T3(i);T4(i);T2(i);T1(i);T5(i)]);end;
 
 name1='Swimming2X';
  name2='Swimming2Y';
@@ -69,6 +69,7 @@ name1='Swimming2X';
  name4='Swimming2WX';
  name5='Swimming2WY';
  name6='Swimming2WZ';
+ namesCoords={name1, name2, name3, name4,name5,name6};
 %  learn_dcp_batch(ID1,leftMatrix(:,1)',name1);
 %  learn_dcp_batch(ID2,leftMatrix(:,2)',name2);
 %  learn_dcp_batch(ID3,leftMatrix(:,3)',name3);
@@ -80,51 +81,52 @@ x=1:272;
 xx=linspace(1,272,floor(len+1)+ 3);
 n_rfs     = [15 15 15 15 15 15];
 time = (0:1:len)';
+index=1;
 for i=ID1:ID3
-    traj=csaps(x,leftMatrix(:,i)',0.9,xx);
-    Y=learn_dcp_batch_oa(i,dt,0,tau,n_rfs(i),0,traj,0,len);
-    T(:,i)=Y(:,1);%501 valori
-    
-   
-    %%%%%%%%%%%%%%per plottare
-    traj=traj(1:501)';
-    figure;
-    clf;
-    plot(time,Y(:,1),'b -o',time,traj,'r');
-    title('y');
-    aa=axis;
-    axis([min(time) max(time) aa(3:4)]);
-    %%%%%%%%%%%%%%%%%%%%%%
- 
+     traj=csaps(x,leftMatrix(:,index)',0.9,xx);
+    Y=learn_dcp_batch_oa(i,dt,0,tau,n_rfs(index),0,traj,0,len,namesCoords(index));
+    T(:,index)=Y(:,1);%501 valori
+    index=index+1;
     dcp('reset_state',i, traj(1));
     dcp('set_goal',i,traj(floor(len+1)),1);
-    goal(i)=T(floor(len+1),i);
+    %   goal(i)=T(floor(len+1),i);
+    %     %%%%%%%%%%%%%%per plottare
+    %     traj=traj(1:501)';
+    % figure(i)
+    %
+    %     plot(time,Y(:,1),'b -o',time,traj,'r');
+    %     title('y');
+    %     aa=axis;
+    %     axis([min(time) max(time) aa(3:4)]);
+    %     %%%%%%%%%%%%%%%%%%%%%%
+    
 end
 
 %  learn_dcp_batch(ID4,leftMatrix(:,4)',name4);
 %  learn_dcp_batch(ID5,leftMatrix(:,5)',name5);
 %  learn_dcp_batch(ID6,leftMatrix(:,6)',name6);
 
-for i=ID4:ID6
-    traj=csaps(x,leftMatrix(:,i)',0.9,xx);
-    Y=learn_dcp_batch_oa(i,dt,0,tau,n_rfs(i),0,traj,0,len);
-    T(:,i)=Y(:,1);%501 valori
-    
-   
-    %%%%%%%%%%%%%%per plottare
-    traj=traj(1:501)';
-    figure;
-    clf;
-    plot(time,Y(:,1),'b -o',time,traj,'r');
-    title('y');
-    aa=axis;
-    axis([min(time) max(time) aa(3:4)]);
-    %%%%%%%%%%%%%%%%%%%%%%
- 
-    dcp('reset_state',i, traj(1));
-    dcp('set_goal',i,traj(floor(len+1)),1);
-    goal(i)=T(floor(len+1),i);
-end
+% index=4;
+% 
+% for i=ID4:ID6
+%     traj=csaps(x,leftMatrix(:,index)',0.9,xx);
+%     Y=learn_dcp_batch_oa(i,dt,0,tau,n_rfs(index),0,traj,0,len,namesCoords(index));
+%     T(:,index)=Y(:,1);%501 valori
+%     index=index+1;
+%     dcp('reset_state',i, traj(1));
+%     dcp('set_goal',i,traj(floor(len+1)),1);
+%     %  goal(i)=T(floor(len+1),i);
+%     %     %%%%%%%%%%%%%%per plottare
+%     %     traj=traj(1:501)';
+%     % figure(i)
+%     %
+%     %     plot(time,Y(:,1),'b -o',time,traj,'r');
+%     %     title('y');
+%     %     aa=axis;
+%     %     axis([min(time) max(time) aa(3:4)]);
+%     %     %%%%%%%%%%%%%%%%%%%%%%
+%     
+% end
  
  
 %  if(any(massimo==1000))

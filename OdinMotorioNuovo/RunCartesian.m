@@ -35,6 +35,7 @@ global check
 global pos_arrivo
 global ax
 global dcps
+global coordinates
 
 %   Inizializzazioni  IDRA
 % data = zeros(0);
@@ -42,7 +43,7 @@ global dcps
 % %save('IDRA_Matlab/data/categories.mat','categories');
 % %save('IDRA_Matlab/data/data.mat','data');
 % output=zeros(10,1);
-% 
+%
 % %   Addestro IDRA
 % while any(output==0) || isempty(output)
 %     % Faccio questo perchè ho salvato i dati in 2 dataset
@@ -81,7 +82,7 @@ PICTURE=ALVideoDeviceProxy(IP,PORT);
 MOTION.setStiffnesses('Body',1);
 
 % Altre inizializzazioni
-NUM_PRIMITIVE=4;
+NUM_PRIMITIVE=9;
 %   d_t per le DMP
 delta_t=0.001;
 %   DOF del robot
@@ -98,7 +99,8 @@ DOF=4;
 DURATA = 3; %imposto durata di ogni dmp 3s standard.
 %   Matrice covarianza delle basis function dell'attore
 SIGMA_ACTOR=diag(ones(1,6));
-MU_ACTOR = [-2,-1,0,1,2,3;-2,-1,0,1,2,3;-2,-1,0,1,2,3;-2,-1,0,1,2,3];
+MU_ACTOR = [0,1,2,3,4,5;0,1,2,3,4,5;0,1,2,3,4,5;0,1,2,3,4,5;0,1,2,3,4,5;0,1,2,3,4,5;0,1,2,3,4,5;
+    0,1,2,3,4,5;0,1,2,3,4,5];
 %  Inizializzo i centri delle basis functions
 %im_f 20 immagini della pallina sul tavolo in posizioni diverse
 % for i=1:NUM_PRIMITIVE
@@ -192,8 +194,8 @@ z = zeros(NUM_PRIMITIVE);
 % [elemento,posizione]=min(dist);
 
 
-POS_EFF_REWARD = [0.0;0.20;0.10;0;0;0]; 
-pi_pesi=randfixedsum(4,1,1,0,1);
+POS_EFF_REWARD = [0.1731;0.1191;0;-0.1147;0.4478;-0.3396];
+pi_pesi=rand(1,NUM_PRIMITIVE);
 ax=1;
 
 x = cell2mat(MOTION.getPosition('LArm', int8(0), false));
@@ -237,48 +239,76 @@ while check<200
     %-------------------------------------------------------------------------
     %   Calcolo la combinazione di primitive.
     %500 sono le posizioni nel tempo che il Nao interpola per muoversi.
-    pi_f=zeros(6,500);
-    disp('somma pesi:');
-     sum(pi_pesi(1:NUM_PRIMITIVE))
+    pi_f=zeros(3,500);
+    %disp('somma pesi:');
+    %sum(pi_pesi(1:NUM_PRIMITIVE))
     %MODIFICARE IL DATASET
     %le prime 7 primitive sono di allungamento
+    figure(1001)
+    clf
+    figure(1002)
+    clf
+    figure(1003)
+    clf
     for i=1:NUM_PRIMITIVE
         %if(pi_pesi(i)>soglia)
-            %   Ogni primitiva ha 4 DOF con un ID [i i+1 i+2 i+3]
-            prim=pi_base((1:6)+6*(i-1),delta_t);
-            
-           
-            pi_f = pi_f + (pi_pesi(i)*prim)/sum(pi_pesi(1:NUM_PRIMITIVE));
-%              hold on
-%              figure(ITERAZIONE_NUMERO+1)
-%              plot3(pi_pesi(i)*prim(1,:)/sum(pi_pesi(1:NUM_PRIMITIVE)),pi_pesi(i)*prim(2,:)/sum(pi_pesi(1:NUM_PRIMITIVE)),pi_pesi(i)*prim(3,:)/sum(pi_pesi(1:NUM_PRIMITIVE)),'-');
-%              axis equal
-        %end
-    end
+        %   Ogni primitiva ha 4 DOF con un ID [i i+1 i+2 i+3]
+        prim=pi_base((1:3)+3*(i-1),delta_t);
         
-%    % le rimanenti 2 di rotazione
-%     for i=8:NUM_PRIMITIVE
-%         %if(pi_pesi(i)>soglia)
-%             primYaw=pi_base((1:6)+6*(i-1),delta_t);
-%             % Se Coreographe registrasse i movimenti relativi...
-%             primYaw([1,3,4],:)=0;
-%             primYaw
-%             pi_f = pi_f + (pi_pesi(i)*primYaw)/sum(pi_pesi(8:NUM_PRIMITIVE));
-%         %end
-%     end
+        %pi_f = pi_f + (pi_pesi(i)*prim)/sum(pi_pesi(1:NUM_PRIMITIVE));
+        pi_f = pi_f + pi_pesi(i)*prim;
+        %              hold on
+        %              figure(ITERAZIONE_NUMERO+1)
+        %              plot3(pi_pesi(i)*prim(1,:)/sum(pi_pesi(1:NUM_PRIMITIVE)),pi_pesi(i)*prim(2,:)/sum(pi_pesi(1:NUM_PRIMITIVE)),pi_pesi(i)*prim(3,:)/sum(pi_pesi(1:NUM_PRIMITIVE)),'-');
+        %              axis equal
+        %end
+        figure(1001)
+        hold on
+        plot(prim(1,1:300),'-');
+        text(400,prim(1,400),sprintf('%d',pi_pesi(i)))
+         figure(1002)
+        hold on
+        plot(prim(2,1:300),'-');
+        text(400,prim(2,400),sprintf('%d',pi_pesi(i)))
+         figure(1003)
+        hold on
+        plot(prim(3,1:300),'-');
+        text(400,prim(3,400),sprintf('%d',pi_pesi(i)))
+         
+    end
+    
+    pi_f =pi_f/sum(pi_pesi(1:NUM_PRIMITIVE));
+    
 
+    %    % le rimanenti 2 di rotazione
+%     for i=8:NUM_PRIMITIVE
+%         %         %if(pi_pesi(i)>soglia)
+%         primYaw=pi_base((1:6)+6*(i-1),delta_t);
+%         %             % Se Coreographe registrasse i movimenti relativi...
+%         %             primYaw([1,3,4],:)=0;
+%         %             primYaw
+%         pi_f = pi_f + (pi_pesi(i)*primYaw)/sum(pi_pesi(8:NUM_PRIMITIVE));
+%     end
+    %    end
+    figure(1001)
+    hold on;
+    plot(pi_f(1,1:300),'*')
     
-    
- 
+      figure(1002)
+      hold on;
+    plot(pi_f(2,1:300),'*')
+      figure(1003)
+      hold on;
+    plot(pi_f(3,1:300),'*')
     
     %-------------------------------------------------------------------------
     %   Eseguo l'azione, Interfacciarsi con Nao
-%     for i=1:4
-%         pi_f(i,find(pi_f(i,:)>massimoNao(i)))=massimoNao(i);
-%         pi_f(i,find(pi_f(i,:)<minimoNao(i)))=minimoNao(i);
-%     end
+    %     for i=1:4
+    %         pi_f(i,find(pi_f(i,:)>massimoNao(i)))=massimoNao(i);
+    %         pi_f(i,find(pi_f(i,:)<minimoNao(i)))=minimoNao(i);
+    %     end
     %ct=obstacle_avoidance_Idra(pi_f);
-    
+    size(pi_f)
     esegui_nao(pi_f);
     
     
@@ -289,28 +319,31 @@ while check<200
     
     %-------------------------------------------------------------------------
     %   Stato di arrivo IDRA
+    
     r1=randi(100,1);
     %MOTION.setPosition('LArm',int8(0),pos_iniziali(:,r1)',0.7,int8(63))
+    
     MOTION.setAngles(NAMES, stato(r1,:),0.5);
     pause(3)
-%     if(index<=9)
-%         img = double(im_f(index).sig/255);
-%     else
-%         img = double(img_rand(index-9).sig/255);
-%     end
-%     signals(1).sig = img;
-%     signals(1).filterName = 'LogPolarBW';
-%     signals(1).instinct = 'None';
-%     signals(2).sig = img;
-%     signals(2).filterName = 'None';
-%     signals(2).instinct = 'ballPosition';
-%     signals(3).sig = stato(r1,:);
-%     signals(3).filterName = 'None';
-%     signals(3).instinct = 'None';
-%     [output, rs] = intentionalArchitecture(signals);
-%     y=output;
-   y = cell2mat(MOTION.getPosition('LArm', int8(0), false));
-    
+    %     if(index<=9)
+    %         img = double(im_f(index).sig/255);
+    %     else
+    %         img = double(img_rand(index-9).sig/255);
+    %     end
+    %     signals(1).sig = img;
+    %     signals(1).filterName = 'LogPolarBW';
+    %     signals(1).instinct = 'None';
+    %     signals(2).sig = img;
+    %     signals(2).filterName = 'None';
+    %     signals(2).instinct = 'ballPosition';
+    %     signals(3).sig = stato(r1,:);
+    %     signals(3).filterName = 'None';
+    %     signals(3).instinct = 'None';
+    %     [output, rs] = intentionalArchitecture(signals);
+    %     y=output;
+    y = cell2mat(MOTION.getPosition('LArm', int8(0), false));
+    disp('Stato iniziale');
+    y(1:3)
     %-------------------------------------------------------------------------
     %   Esegue una iterazione dell'algoritmo di apprendimento dei
     %   metaparametri.
@@ -332,37 +365,36 @@ while check<200
     %-------------------------------------------------------------------------
     %   Esegue una iterazione dell'algoritmo di combinazione di primitive.
     [w,t,pi_pesi,z]=modulo_gangli(x,y,r,w,t,pi_pesi,z);
-      
-    
+    pi_pesi =pi_pesi;    
     %-------------------------------------------------------------------------
-%     % Prendo i dati per i grafici
-%     if(check==0)
-%         x_evo=x;
-%         r_evo=r;
-%         w_evo=zeros(size(w,1),size(w,2));
-%         t_evo=zeros(size(t,1),size(t,2));
-%         pi_pesi_evo=pi_pesi;
-%         z_evo=zeros(size(z,1),size(z,2));
-%         teta_metap_evo=teta_metap;
-%         meta_param_evo=meta_param;
-%         r_ang_evo=R_ANG;
-%         r_car_evo=R_CAR;
-%         g_evo= G_EVO;
-%         pos_arrivo_evo=pos_arrivo;
-%     else
-%         x_evo= [x_evo x];
-%         r_evo= [r_evo r];
-%         w_evo=[w_evo w];
-%         t_evo= [t_evo t];
-%         pi_pesi_evo= [pi_pesi_evo pi_pesi];
-%         z_evo= [z_evo z];
-%         teta_metap_evo=[teta_metap_evo teta_metap];
-%         meta_param_evo=[meta_param_evo meta_param];
-%         r_ang_evo=[r_ang_evo R_ANG];
-%         r_car_evo=[r_car_evo R_CAR];
-%         g_evo=[g_evo G_EVO];
-%         pos_arrivo_evo= [pos_arrivo_evo pos_arrivo] ;
-%     end
+    %     % Prendo i dati per i grafici
+    %     if(check==0)
+    %         x_evo=x;
+    %         r_evo=r;
+    %         w_evo=zeros(size(w,1),size(w,2));
+    %         t_evo=zeros(size(t,1),size(t,2));
+    %         pi_pesi_evo=pi_pesi;
+    %         z_evo=zeros(size(z,1),size(z,2));
+    %         teta_metap_evo=teta_metap;
+    %         meta_param_evo=meta_param;
+    %         r_ang_evo=R_ANG;
+    %         r_car_evo=R_CAR;
+    %         g_evo= G_EVO;
+    %         pos_arrivo_evo=pos_arrivo;
+    %     else
+    %         x_evo= [x_evo x];
+    %         r_evo= [r_evo r];
+    %         w_evo=[w_evo w];
+    %         t_evo= [t_evo t];
+    %         pi_pesi_evo= [pi_pesi_evo pi_pesi];
+    %         z_evo= [z_evo z];
+    %         teta_metap_evo=[teta_metap_evo teta_metap];
+    %         meta_param_evo=[meta_param_evo meta_param];
+    %         r_ang_evo=[r_ang_evo R_ANG];
+    %         r_car_evo=[r_car_evo R_CAR];
+    %         g_evo=[g_evo G_EVO];
+    %         pos_arrivo_evo= [pos_arrivo_evo pos_arrivo] ;
+    %     end
     
     %------------------------------------------------------------------------
     %   Aggiorno lo stato corrente
