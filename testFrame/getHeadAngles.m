@@ -1,6 +1,6 @@
 function angles = getHeadAngles(camera_id)
 
-mem= ALMemoryProxy('10.79.5.60',9559);
+mem= ALMemoryProxy('192.168.1.100',9559);
 angles(1) = 0;
 if(camera_id==0)
      angles(2) =mem.getData('Device/SubDeviceList/HeadPitch/Position/Sensor/Value');

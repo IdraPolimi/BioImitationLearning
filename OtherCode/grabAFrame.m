@@ -1,6 +1,6 @@
 function image = grabAFrame(imageName,index)
 
-video = ALVideoDeviceProxy('10.79.5.60',9559);
+video = ALVideoDeviceProxy('192.168.1.102',9559);
 video.subscribeCamera('matlab',int16(index),int16(3),int16(11),int16(25));
 res = video.getImageRemote('matlab');
 rgb  = res{7}';

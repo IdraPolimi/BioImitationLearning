@@ -1,8 +1,8 @@
 function backStraight()
 
 
- mem= ALMemoryProxy('192.168.1.102',9559);
- mot= ALMotionProxy('192.168.1.102',9559);
+ mem= ALMemoryProxy('192.168.1.100',9559);
+ mot= ALMotionProxy('192.168.1.100',9559);
  backVal=mem.getData('Device/SubDeviceList/InertialSensor/AngleY/Sensor/Value')
 
 

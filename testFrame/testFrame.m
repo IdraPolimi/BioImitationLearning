@@ -13,7 +13,7 @@ pointC
 pointD=[pointC;1]'*rot;
 pointD
 
-%[pointR,cameraPos]=cameraPosition([0;0.408002138137817;-0.018450021743774],0,pointD);%UP CAMERA
+[pointR,cameraPos]=cameraPosition(getHeadAngles(0),0,pointD);%UP CAMERA
 %[pointR,cameraPos]=cameraPosition([0;0.408002138137817;-0.018450021743774],1,pointD);%DOWN CAMERA
 
 % cameraPos(3)=cameraPos(3)+NeckOffsetZ

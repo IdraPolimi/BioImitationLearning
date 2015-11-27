@@ -6,7 +6,7 @@ global rot
 nPoints = 5;
 
 %im = grabAFrame();
-im = imread('nostrafusion.jpg');
+im = imread('CheckThesis.jpg');
 pixelPoints = selectPointsInImage(im,nPoints);
 coordPoints =[];
 for i = 1:nPoints
@@ -19,27 +19,27 @@ for i = 1:nPoints
     coordPoints = [coordPoints,UV2XY(pixelPoints(:,i),FC,CC,ALPHA_C,ERot,ETran,0)];
 end
 
-figure;
-plot(coordPoints(2,:),coordPoints(1,:));
+% figure;
+% plot(coordPoints(2,:),coordPoints(1,:));
 
 pointsCamera = [];
 for i = 1:nPoints
     pointsCamera = [pointsCamera,fromWorldToCamera(ERot,ETran, coordPoints(:,i))];
 end
 
-figure;
+% figure;
 
 
 pointsCameraRot = [];
 for i = 1:nPoints
     pointsCameraRot=[pointsCameraRot,(pointsCamera(:,i)'*rot)'];
 end
-plot3(pointsCameraRot(1,:),pointsCameraRot(2,:),pointsCameraRot(3,:),'b');
-hold on
-plot3(0,0,0,'rO')
-xlabel('X ');
-ylabel('Y ');
-zlabel('Z ');
+% plot3(pointsCameraRot(1,:),pointsCameraRot(2,:),pointsCameraRot(3,:),'b');
+% hold on
+% plot3(0,0,0,'rO')
+% xlabel('X ');
+% ylabel('Y ');
+% zlabel('Z ');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 pointsTorso = [];
